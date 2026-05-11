@@ -1,25 +1,27 @@
-import { afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
-import '@testing-library/jest-dom/vitest'
-import fetch from 'node-fetch';
+import { afterEach, vi } from "vitest";
+import { cleanup } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
 
-global.fetch = fetch
-
+// GLOBAL MOCK DATA
 global.baseTasks = [
-    { id: 1, title: "Buy groceries", completed: false },
-    { id: 2, title: "Finish React project", completed: false },
-  ]
+  { id: 1, title: "Buy groceries", completed: false },
+  { id: 2, title: "Finish React project", completed: false },
+];
 
 
-  
+// FETCH MOCK HELPER
 global.setFetchResponse = (val) => {
-    global.fetch = vi.fn(() => Promise.resolve({
-        json: () => Promise.resolve(val),
-        ok: true,
-        status: 200
-    }))
-}
+  global.fetch = vi.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve(val),
+      ok: true,
+      status: 200,
+    })
+  );
+};
 
+// CLEANUP AFTER EACH TEST
 afterEach(() => {
-    cleanup();
-})
+  cleanup();
+  vi.clearAllMocks();
+});

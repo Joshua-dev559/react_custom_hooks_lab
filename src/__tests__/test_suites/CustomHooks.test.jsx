@@ -1,7 +1,8 @@
-import { fireEvent,render,renderHook, act } from "@testing-library/react";
-import { useLocalStorage } from "../../hooks/useLocalStorage"
+import { fireEvent, render, renderHook, act } from "@testing-library/react";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import App from "../../components/App";
 
+// Mock localStorage
 class LocalStorageMock {
   constructor() {
     this.store = {};
@@ -24,30 +25,59 @@ class LocalStorageMock {
   }
 }
 
-global.localStorage = new LocalStorageMock;
+global.localStorage = new LocalStorageMock();
 
 beforeEach(() => {
   localStorage.clear();
 });
 
 describe("Custom Hooks", () => {
+
   test("returns an initial state and a setter function", () => {
-    const { result } = renderHook(() => useLocalStorage("test", "value"));
-    expect(result.current).toMatchObject(["value", expect.any(Function)]);
+    const { result } = renderHook(() =>
+      useLocalStorage("test", "value")
+    );
+
+    expect(result.current).toMatchObject([
+      "value",
+      expect.any(Function)
+    ]);
   });
 
-  test("has an initial value of null of no value is passed in as a second argument", () => {
-    const { result } = renderHook(() => useLocalStorage("test"));
-    expect(result.current).toMatchObject([null, expect.any(Function)]);
+  test("has an initial value of null if no value is passed in", () => {
+    const { result } = renderHook(() =>
+      useLocalStorage("test")
+    );
+
+    expect(result.current).toMatchObject([
+      null,
+      expect.any(Function)
+    ]);
   });
 
-  test("saves the value in localStorage when state is updated", async () => {
-    const { result } = renderHook(() => useLocalStorage("name", "old value"));
+  test("saves value in localStorage when state updates", async () => {
+    const { result } = renderHook(() =>
+      useLocalStorage("name", "old value")
+    );
+
     const [, setState] = result.current;
-    let{findAllByTestId} =render(<App/>)
 
-    let input = await findAllByTestId("name")
-    fireEvent.change(input[0], { target: { value: "New Value" } });
+    act(() => {
+      setState("New Value");
+    });
+
+    expect(localStorage.getItem("name")).toBe("New Value");
+  });
+
+  test("updates input in DOM and saves to localStorage", () => {
+    const { getByTestId } = render(<App />);
+
+    const input = getByTestId("name-input");
+
+    fireEvent.change(input, {
+      target: { value: "New Value" }
+    });
+
     expect(localStorage.getItem("name")).toBe("New Value");
   });
 });
