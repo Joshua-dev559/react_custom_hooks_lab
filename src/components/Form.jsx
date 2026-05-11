@@ -6,17 +6,23 @@ export default function Form() {
 
   return (
     <form>
-      <input
-        data-testid="name-input"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div>
+        <label>Name:</label>
+        <input
+          data-testid="name-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
 
-      <input
-        data-testid="serviceNumber-input"
-        value={serviceNumber}
-        onChange={(e) => setServiceNumber(e.target.value)}
-      />
+      <div>
+        <label>Service Number:</label>
+        <input
+          data-testid="service-input"
+          value={serviceNumber}
+          onChange={(e) => setServiceNumber(e.target.value)}
+        />
+      </div>
     </form>
   );
 }

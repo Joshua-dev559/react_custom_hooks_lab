@@ -1,6 +1,6 @@
 import Form from "./Form";
 
-function App() {
+export default function App() {
   return (
     <div>
       <h2>Service Form</h2>
@@ -8,5 +8,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
