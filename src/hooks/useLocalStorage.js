@@ -1,32 +1,19 @@
 import { useState, useEffect } from "react";
 
-/*Safe localStorage hook that works in all test environments*/
-function useLocalStorage(key, initialValue = null) {
+export default function useLocalStorage(key, initialValue = null) {
   const [value, setValue] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key);
-      return stored !== null ? stored : initialValue;
-    } catch {
-      return initialValue;
-    }
+    const stored = localStorage.getItem(key);
+
+    // If nothing exists, use initialValue (or null)
+    return stored !== null ? stored : initialValue;
   });
 
   useEffect(() => {
-    try {
-      if (value === undefined) return;
-      localStorage.setItem(key, value);
-    } catch {
-      // ignore storage errors in test environment
-    }
+    // IMPORTANT: store raw value (NO JSON.stringify)
+    if (value === undefined || value === null) return;
+
+    localStorage.setItem(key, value);
   }, [key, value]);
 
   return [value, setValue];
 }
-
-/* CRITICAL FIX FOR APP TEST */
-
-// named export
-export { useLocalStorage };
-
-// default export (IMPORTANT)
-export default useLocalStorage;
